@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class PlayerLocomotion : MonoBehaviour
 {
@@ -99,21 +101,19 @@ public class PlayerLocomotion : MonoBehaviour
 
         if (!isGrounded)
         {
-            animatorManager.PlayTargetAnimation("Falling");
+            animatorManager.animator.Play("Falling");
 
             inAirTimer += Time.deltaTime;
         }
 
-        if (Physics.SphereCast(rayCastOrigin, 2f, -Vector3.up, out hit, groundLayer)) {
-            if (!isGrounded)
-            {
-                animatorManager.PlayTargetAnimation("Land");
-                print("Land");
-            }
-        }
-
         if (Physics.SphereCast(rayCastOrigin, 0.2f, -Vector3.up, out hit, groundLayer))
         {
+            print("SphereCast");
+            if (!isGrounded)
+            {
+                animatorManager.PlayTargetAnimation("Landing");
+            }
+
             inAirTimer = 0;
             isGrounded = true;
         } else
@@ -125,7 +125,7 @@ public class PlayerLocomotion : MonoBehaviour
     public void HandleJumping() {
         if (isGrounded) {
             animatorManager.animator.SetBool("isJumping", true);
-            animatorManager.PlayTargetAnimation("Jump");
+            // animatorManager.PlayTargetAnimation("Jump");
 
             float jumpingVelocity = Mathf.Sqrt(-2 * gravityIntensity * jumpHeight);
             Vector3 playerVelocity = moveDirection;
